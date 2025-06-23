@@ -31,6 +31,21 @@ class CleanStringFieldsTransformer(Transformer):
             data[col] = data[col].astype(str).str.strip().str.lower()
         log.append("✅ Champs texte nettoyés (espaces & majuscules)")
         return data
+    
+class ImputerNaN(Transformer):
+    def transform(self, data: pd.DataFrame, log: list) -> pd.DataFrame:
+        for col in data.select_dtypes(include="number").columns:
+            if -0.5 <= data[col].skew() <= 0.5:
+                data[col].fillna(data[col].mean(), inplace=True)
+            else:
+                data[col].fillna(data[col].median(), inplace=True)
+        for col in data.select_dtypes("object").columns:
+            data[col].fillna(data[col].mode()[0], inplace=True)
+        for col in data.select_dtypes("datetime").columns:
+            data[col].bfill(inplace=True)
+            data[col].ffill(inplace=True)
+        log.append("✅ Valuer NaN remplacé (Number et chaine et date)")
+        return data
 
 class FormatDateColumnsTransformer(Transformer):
     def __init__(self, date_columns):

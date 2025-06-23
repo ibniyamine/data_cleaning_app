@@ -41,7 +41,7 @@ def run_app():
                 mime = "application/json"
                 output_bytes = lambda df: df.to_json(orient='records', indent=2).encode('utf-8')
             else:
-                st.error("❌ Format d’exportation non reconnu.")
+                st.error("Format d’exportation non reconnu.")
                 return
             
 
@@ -56,7 +56,9 @@ def run_app():
                     transformer.DropEmptyRowsTransformer(),
                     transformer.StandardizeDataTransformer(),
                     transformer.CleanStringFieldsTransformer(),
-                    transformer.FormatDateColumnsTransformer(["date"])
+                    transformer.FormatDateColumnsTransformer(["date"]),
+                    transformer.ImputerNaN()
+                    
                 ],
                 exporter=exporter
             )

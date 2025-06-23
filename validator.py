@@ -21,7 +21,7 @@ class RequiredColumnValidator(Validator):
     def validate(self, data: pd.DataFrame, log: list) -> None:
         missing = [col for col in self.required_columns if col not in data.columns]
         if missing:
-            raise ValueError(f"Missing required columns: {missing}")
+            raise ValueError(f"Il manque la colonne: {missing}")
         log.append("✅ Colonnes obligatoires présentes")
 
 class NoMissingIDValidator(Validator):
@@ -30,7 +30,7 @@ class NoMissingIDValidator(Validator):
 
     def validate(self, data: pd.DataFrame, log: list) -> None:
         if data[self.id_column].isnull().any():
-            raise ValueError(f"Null values found in '{self.id_column}' column")
+            raise ValueError(f"Il y'a une valeur null dans '{self.id_column}' column")
         log.append(f"✅ Aucun ID manquant dans '{self.id_column}'")
 
 class DropDuplicateValidator(Validator):
